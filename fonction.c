@@ -16,10 +16,17 @@ int main(){
         file[i] = ch;
         i++;
     }
-    file[i] = '\0';
+
+    if(file[i-1] != 'n'){
+        file[i] = '\n';
+        file[i+1] = '\0';
+    }
+    else{
+        file[i] = '\0';
+    }
 
     char buff[1000];
-    contour_milieu(file, buff, 6);
+    contour_milieu(file, buff, 9);
     printf("%s", buff);
 
     fclose(fptr);
@@ -92,7 +99,6 @@ void contour(char *file, char *buff, int max_taille_ligne){
         buff++;
     }
 
-
     for(int i=0; i<max_taille_ligne+2; i++){
         buff[0] = '*';
         buff++;
@@ -117,46 +123,52 @@ void contour_milieu(char *file, char *buff, int max_taille_ligne){
     int nb_caracteres_ecrits = 0;
     
     while(file[0] != '\0'){
-        if (nb_caracteres_ecrits == max_taille_ligne){
+        if(nb_caracteres_ecrits == max_taille_ligne){
             if(file[0] == '\n') file++;
             ecrire_mot(buff, ligne, taille_ligne);
             buff += taille_ligne;
             buff[0] = '*';
-            nb_caracteres_ecrits = 0;
-            taille_ligne = 0;
             buff++;
             buff[0] = '\n';
+            buff++;
+            taille_ligne = 0;
+            nb_caracteres_ecrits = 0;
         }
         else if((buff-1)[0] == '\n'){
             buff[0] = '*';
+            buff++;
             nb_caracteres_ecrits = 0;
             taille_ligne = 0;
         }
         else if(file[0] == ' '){
             ligne[taille_ligne] = ' ';
             taille_ligne++;
-            file++;
             nb_caracteres_ecrits++;
+            file++;
         }
         else if(file[0] == '\n'){
             int reste = (max_taille_ligne - nb_caracteres_ecrits) % 2;
-            for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2; va++){
+
+            for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 ; va++){
                 buff[0] = ' ';
                 buff++;
             }
-
+            // if(ligne[taille_ligne-1] == ' '){
+            //     taille_ligne--;
+            //     nb_caracteres_ecrits--;
+            // }
             ecrire_mot(buff, ligne, taille_ligne);
             buff += taille_ligne;
 
-            for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 + reste; va++){
+            for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 + reste ; va++){
                 buff[0] = ' ';
                 buff++;
             }
 
             buff[0] = '*';
             buff++;
-
             buff[0] = '\n';
+            buff++;
             file++;
         }
         else{
@@ -164,40 +176,41 @@ void contour_milieu(char *file, char *buff, int max_taille_ligne){
             if(taille_mot <= max_taille_ligne - nb_caracteres_ecrits){
                 ecrire_mot(ligne + taille_ligne, mot, taille_mot);
                 taille_ligne += taille_mot;
-                file += taille_mot;
                 nb_caracteres_ecrits += taille_mot;
-                continue;
+                file += taille_mot;
             }
             else{
                 if(nb_caracteres_ecrits == 0){
                     printf("Le nombre maximale de ligne est trop petit par rapport à la taille des mots!\n");
                     exit(1);
                 }
+
                 int reste = (max_taille_ligne - nb_caracteres_ecrits) % 2;
-                for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2; va++){
+
+                for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 ; va++){
                     buff[0] = ' ';
                     buff++;
                 }
-
+                // if(ligne[taille_ligne-1] == ' '){
+                //     taille_ligne--;
+                //     nb_caracteres_ecrits--;
+                // }
                 ecrire_mot(buff, ligne, taille_ligne);
                 buff += taille_ligne;
 
-                for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 + reste; va++){
+                for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 + reste ; va++){
                     buff[0] = ' ';
                     buff++;
                 }
 
                 buff[0] = '*';
                 buff++;
-
                 buff[0] = '\n';
-                file++;
+                buff++;
             }
+
         }
-
-        buff++;
     }
-
 
     for(int i=0; i<max_taille_ligne+2; i++){
         buff[0] = '*';
