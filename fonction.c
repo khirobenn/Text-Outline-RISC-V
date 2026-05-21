@@ -3,6 +3,7 @@
 
 void contour(char *file, char *buff, int max_taille_ligne);
 void contour_milieu(char *file, char *buff, int max_taille_ligne);
+void contour_droite(char *file, char *buff, int max_taille_ligne);
 void lire_mot(char *file, char *mot, int *t);
 void ecrire_mot(char *buff, char *mot, int t);
 
@@ -26,7 +27,7 @@ int main(){
     }
 
     char buff[1000];
-    contour_milieu(file, buff, 9);
+    contour_droite(file, buff, 5);
     printf("%s", buff);
 
     fclose(fptr);
@@ -147,16 +148,17 @@ void contour_milieu(char *file, char *buff, int max_taille_ligne){
             file++;
         }
         else if(file[0] == '\n'){
+            if(ligne[taille_ligne-1] == ' '){
+                taille_ligne--;
+                nb_caracteres_ecrits--;
+            }
+
             int reste = (max_taille_ligne - nb_caracteres_ecrits) % 2;
 
             for(int va = 0; va < (max_taille_ligne - nb_caracteres_ecrits)/2 ; va++){
                 buff[0] = ' ';
                 buff++;
             }
-            // if(ligne[taille_ligne-1] == ' '){
-            //     taille_ligne--;
-            //     nb_caracteres_ecrits--;
-            // }
             ecrire_mot(buff, ligne, taille_ligne);
             buff += taille_ligne;
 
@@ -184,6 +186,10 @@ void contour_milieu(char *file, char *buff, int max_taille_ligne){
                     printf("Le nombre maximale de ligne est trop petit par rapport à la taille des mots!\n");
                     exit(1);
                 }
+                if(ligne[taille_ligne-1] == ' '){
+                    taille_ligne--;
+                    nb_caracteres_ecrits--;
+                }
 
                 int reste = (max_taille_ligne - nb_caracteres_ecrits) % 2;
 
@@ -202,6 +208,114 @@ void contour_milieu(char *file, char *buff, int max_taille_ligne){
                     buff[0] = ' ';
                     buff++;
                 }
+
+                buff[0] = '*';
+                buff++;
+                buff[0] = '\n';
+                buff++;
+            }
+
+        }
+    }
+
+    for(int i=0; i<max_taille_ligne+2; i++){
+        buff[0] = '*';
+        buff++;
+    } 
+
+    buff[0] = '\n';
+    buff++;
+    buff[0] = '\0';
+}
+
+void contour_droite(char *file, char *buff, int max_taille_ligne){
+    for(int i=0; i<max_taille_ligne+2; i++){
+        buff[0] = '*';
+        buff++;
+    }
+    buff[0] = '\n';
+    buff++;
+    char mot[100];
+    char ligne[100];
+    int taille_ligne = 0;
+    int taille_mot;
+    int nb_caracteres_ecrits = 0;
+    
+    while(file[0] != '\0'){
+        if(nb_caracteres_ecrits == max_taille_ligne){
+            if(file[0] == '\n') file++;
+            if(ligne[taille_ligne-1] == ' '){
+                taille_ligne--;
+                nb_caracteres_ecrits--;
+                buff[0] = ' ';
+                buff++;
+            }
+            ecrire_mot(buff, ligne, taille_ligne);
+            buff += taille_ligne;
+            buff[0] = '*';
+            buff++;
+            buff[0] = '\n';
+            buff++;
+            taille_ligne = 0;
+            nb_caracteres_ecrits = 0;
+        }
+        else if((buff-1)[0] == '\n'){
+            buff[0] = '*';
+            buff++;
+            nb_caracteres_ecrits = 0;
+            taille_ligne = 0;
+        }
+        else if(file[0] == ' '){
+            ligne[taille_ligne] = ' ';
+            taille_ligne++;
+            nb_caracteres_ecrits++;
+            file++;
+        }
+        else if(file[0] == '\n'){
+            if(ligne[taille_ligne-1] == ' '){
+                taille_ligne--;
+                nb_caracteres_ecrits--;
+            }
+
+
+            for(int va = 0; va < max_taille_ligne - nb_caracteres_ecrits ; va++){
+                buff[0] = ' ';
+                buff++;
+            }
+            ecrire_mot(buff, ligne, taille_ligne);
+            buff += taille_ligne;
+
+            buff[0] = '*';
+            buff++;
+            buff[0] = '\n';
+            buff++;
+            file++;
+        }
+        else{
+            lire_mot(file, mot, &taille_mot);
+            if(taille_mot <= max_taille_ligne - nb_caracteres_ecrits){
+                ecrire_mot(ligne + taille_ligne, mot, taille_mot);
+                taille_ligne += taille_mot;
+                nb_caracteres_ecrits += taille_mot;
+                file += taille_mot;
+            }
+            else{
+                if(nb_caracteres_ecrits == 0){
+                    printf("Le nombre maximale de ligne est trop petit par rapport à la taille des mots!\n");
+                    exit(1);
+                }
+                if(ligne[taille_ligne-1] == ' '){
+                    taille_ligne--;
+                    nb_caracteres_ecrits--;
+                }
+
+
+                for(int va = 0; va < max_taille_ligne - nb_caracteres_ecrits ; va++){
+                    buff[0] = ' ';
+                    buff++;
+                }
+                ecrire_mot(buff, ligne, taille_ligne);
+                buff += taille_ligne;
 
                 buff[0] = '*';
                 buff++;
