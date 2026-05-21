@@ -27,7 +27,19 @@ int main(){
     }
 
     char buff[1000];
-    contour_droite(file, buff, 5);
+    int max_ligne = 5;
+
+    printf("Le nombre de caractères maximum pour la ligne est : %d\n", max_ligne);
+    printf("\nContour à gauche:\n");
+    contour(file, buff, max_ligne);
+    printf("%s", buff);
+
+    printf("\nContour au milieu:\n");
+    contour_milieu(file, buff, max_ligne);
+    printf("%s", buff);
+
+    printf("\nContour à gauche:\n");
+    contour_droite(file, buff, max_ligne);
     printf("%s", buff);
 
     fclose(fptr);
