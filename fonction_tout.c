@@ -29,8 +29,8 @@ int main(){
             
     char file[] = "khio lea\nmain3 hhh\n";
     char buff[1000];
-    int max_ligne = 10;
-    contour_milieu(file, buff, max_ligne);
+    int max_ligne = 5;
+    contour_droite(file, buff, max_ligne);
     printf("%s", buff);
 
 }
@@ -225,12 +225,14 @@ int contour_droite(char *file, char *buff, int max_taille_ligne){
     while(file[0] != '\0'){
         if(nb_caracteres_ecrits == max_taille_ligne){
             if(file[0] == '\n') file++;
+            // Le plus par rapport au code de contour_milieu
             if(ligne[taille_ligne-1] == ' '){
                 taille_ligne--;
                 nb_caracteres_ecrits--;
                 buff[0] = ' ';
                 buff++;
             }
+            // ---------------------------------
             ecrire_mot(buff, ligne, taille_ligne);
             buff += taille_ligne;
             buff[0] = '*';
