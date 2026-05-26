@@ -1,4 +1,5 @@
 .data
+# Soyez sur que path et path_out sont des chemins absolus ou relatifs par rapport au chemin du lancement de RARS avec la commande java
 path: .asciz "test"
 path_output: .asciz "test_contour"
 choix1: .asciz "1. Contour à gauche.\n"
@@ -144,12 +145,10 @@ fin_sans_affichage:
 # a1 = mot
 # a2 = t
 ecrire_mot:
-	addi sp, sp, -20
-	sw a0, 0(sp)
-	sw a1, 4(sp)
-	sw s0, 8(sp)
-	sw s1, 12(sp)
-	sw ra, 16(sp)
+	addi sp, sp, -12
+	sw s0, 0(sp)
+	sw s1, 4(sp)
+	sw ra, 8(sp)
 	
 	ori s0, zero, 0
 boucle_ecrire_mot:
@@ -161,12 +160,10 @@ boucle_ecrire_mot:
 	addi s0, s0, 1
 	j boucle_ecrire_mot
 fin_boucle_ecrire_mot:
-	lw a0, 0(sp)
-	lw a1, 4(sp)
-	lw s0, 8(sp)
-	lw s1, 12(sp)
-	lw ra, 16(sp)
-	addi sp, sp, 20
+	lw s0, 0(sp)
+	lw s1, 4(sp)
+	lw ra, 8(sp)
+	addi sp, sp, 12
 	ret
 	
     	
@@ -180,17 +177,14 @@ fin_boucle_ecrire_mot:
 lire_mot:
 
 	#prologue
-	addi sp, sp, -40
+	addi sp, sp, -28
 	sw s0, 0(sp)
 	sw s1, 4(sp)
 	sw s2, 8(sp)
 	sw s3, 12(sp)
 	sw s4, 16(sp)
 	sw s5, 20(sp)
-	sw a0, 24(sp)
-	sw a1, 28(sp)
-	sw a2, 32(sp)
-	sw ra, 36(sp)
+	sw ra, 24(sp)
 
 	ori s0, zero, 0
 	ori s1, zero, 0
@@ -221,11 +215,8 @@ lire_mot:
 	lw s3, 12(sp)
 	lw s4, 16(sp)
 	lw s5, 20(sp)
-	lw a0, 24(sp)
-	lw a1, 28(sp)
-	lw a2, 32(sp)
-	lw ra, 36(sp)
-	addi sp, sp, 40
+	lw ra, 24(sp)
+	addi sp, sp, 28
 	ret
 
 # ==========================================================	
@@ -326,9 +317,14 @@ while:
 		j fin_if
 	else_if_2:
 		bne s9, s4, else_if_3
-		sb s4, 0(a1)
 		addi a0, a0, 1
+		beqz s7, egal_zero 
+		sb s4, 0(a1)
 		addi s7, s7, 1
+		j sauter_egal_zero
+		egal_zero:
+		addi a1, a1, -1
+		sauter_egal_zero:
 		j fin_if
 	
 	else_if_3:
@@ -533,10 +529,11 @@ while_milieu:
 		j fin_if_milieu
 	else_if_2_milieu:
 		bne s9, s4, else_if_3_milieu
+		addi a0, a0, 1
+		beqz s7, fin_if_milieu
 		la s1, ligne
 		add s1, s1, s0
 		sb s4, 0(s1)
-		addi a0, a0, 1
 		addi s7, s7, 1
 		addi s0, s0, 1
 		j fin_if_milieu
@@ -848,10 +845,11 @@ while_droite:
 		j fin_if_droite
 	else_if_2_droite:
 		bne s9, s4, else_if_3_droite
+		addi a0, a0, 1
+		beqz s7, fin_if_droite
 		la s1, ligne
 		add s1, s1, s0
 		sb s4, 0(s1)
-		addi a0, a0, 1
 		addi s7, s7, 1
 		addi s0, s0, 1
 		j fin_if_droite
@@ -1096,7 +1094,6 @@ ori a7, zero, 57
 ecall
 
 or a0, zero, s1
-
 # epilogue
 lw a1, 4(sp)
 sw s1, 8(sp)
